@@ -1,0 +1,46 @@
+#version: '3.1'
+
+services:
+  php:
+    build: .
+    ports:
+    - 8081:80
+
+  db:
+    image: postgres:11
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - net
+
+  pgadmin4:
+      image: elestio/pgadmin:latest
+      restart: always
+      environment:
+        PGADMIN_DEFAULT_EMAIL: postgres@qwe.ru
+        PGADMIN_DEFAULT_PASSWORD: postgres
+        PGADMIN_LISTEN_PORT: 8080
+      ports:
+        - "8080:8080"
+      networks:
+        - net
+      volumes:
+        - ./servers.json:/pgadmin4/servers.json
+
+  grafana:
+      image: grafana/grafana-enterprise
+      container_name: grafana
+      restart: unless-stopped
+      ports:
+        - '3000:3000'
+      networks:
+        - net
+
+networks:
+  net:
+      driver: bridge
