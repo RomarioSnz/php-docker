@@ -1,48 +1,43 @@
-#version: '3.1'
-
 services:
   php:
-    build: .
+    build: ./site
     ports:
-    - 8081:80
-
-  db:
-    image: postgres:11
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
-    ports:
-      - "5432:5432"
+      - 8081:80
+    depends_on: 
+      - db
     networks:
       - net
 
+  db:
+    build: ./database  # Указываем, что нужно использовать Dockerfile в текущей директории
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres  # Имя базы данных по умолчанию (PostgreSQL требует указания)
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data 
+    networks:
+      - net
+ 
   pgadmin4:
-      image: elestio/pgadmin:latest
-      restart: always
-      environment:
-        PGADMIN_DEFAULT_EMAIL: postgres@qwe.ru
-        PGADMIN_DEFAULT_PASSWORD: postgres
-        PGADMIN_LISTEN_PORT: 8080
-      ports:
-        - "8080:8080"
-      networks:
-        - net
-      volumes:
-        - ./servers.json:/pgadmin4/servers.json
-
-  grafana:
-      image: grafana/grafana-enterprise
-      container_name: grafana
-      restart: unless-stopped
-      ports:
-        - '3000:3000'
-      networks:
-        - net
+    image: elestio/pgadmin:latest
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: postgres@qwe.ru
+      PGADMIN_DEFAULT_PASSWORD: postgres
+      PGADMIN_LISTEN_PORT: 8080
+    ports:
+      - "8080:8080"
+    networks:
+      - net
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
 
 networks:
   net:
-      driver: bridge
+    driver: bridge
 
-#Авававаававава
+volumes:
+  db_data:
