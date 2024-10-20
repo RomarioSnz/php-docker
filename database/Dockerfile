@@ -7,3 +7,5 @@ RUN apt-get update && apt-get install -y postgresql-contrib
 COPY ./init-db.sql /docker-entrypoint-initdb.d/
 
 EXPOSE 5432
+
+#ававававававав
