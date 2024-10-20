@@ -1,4 +1,4 @@
-FROM postgres:latest
+FROM postgres
 
 # Устанавливаем расширение dblink
 RUN apt-get update && apt-get install -y postgresql-contrib
