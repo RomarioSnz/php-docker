@@ -13,3 +13,11 @@ scrape_configs:
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']  # Сбор метрик с самого Prometheus
+
+  - job_name: 'telegraf'
+    static_configs:
+      - targets: ['telegraf:9273']  # Telegraf передает метрики на порт 9273
+
+  - job_name: 'windows'
+    static_configs:
+      - targets: ['localhost:9182']  # WMI Exporter, работающий на хостовой машине
